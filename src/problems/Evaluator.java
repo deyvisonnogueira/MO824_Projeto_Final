@@ -1,5 +1,6 @@
 package problems;
 
+import problems.influence.Graph;
 import solutions.Solution;
 
 /**
