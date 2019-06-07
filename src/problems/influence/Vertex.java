@@ -78,9 +78,22 @@ public class Vertex implements Evaluator<Vertex> {
 	}
 	
 	public Graph influencia(Graph g) {
-		for(Arc a: g.A) {
-			if(a.source == this.id && g.V.get(a.dest-1).threshold > 0 ) {
-				g.V.get(a.dest-1).threshold-- ;
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		
+		for(Vertex v: g.active) {
+			
+			ids.add(v.id);
+			for(Arc a: v.arcs) { 
+				g.decreaseThreashold(a.dest);
+			}
+		}
+		for(Integer i: ids) {
+			g.removeVertexById((int)i);
+		}
+		
+		for(Vertex v: g.V) {
+			if(v.threshold == 0) {
+				g.active.add(v);
 			}
 		}
 		return g;
@@ -100,7 +113,7 @@ public class Vertex implements Evaluator<Vertex> {
 
 	@Override
 	public Double evaluateExchangeCost(Vertex elemIn, Vertex elemOut, Solution<Vertex> sol) {
-		// TODO Auto-generated method stub
+		Graph incuSol = new Graph();
 		return null;
 	}
 	

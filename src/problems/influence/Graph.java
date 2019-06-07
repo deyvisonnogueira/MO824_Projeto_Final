@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Graph {
 	public ArrayList<Vertex> V;
@@ -71,9 +72,9 @@ public class Graph {
 		}
 	}
 	
-	public void propagation() {
+	public Graph propagation() {
 		
-		ArrayList<Vertex> influenciadores = new ArrayList<Vertex>();
+		
 		Graph g = new Graph();
 		for(Vertex v: this.V) {
 			g.V.add(new Vertex(v));
@@ -81,16 +82,53 @@ public class Graph {
 		for(Arc a: this.A) {
 			g.A.add((new Arc(a)));
 		}
-		
 		for(Vertex v: this.active) {
-			influenciadores.add(v);
-			g = v.influencia(g);
-			
-			//AQUI
+			g.active.add(v);
 		}
 		
+	
+		while(!g.active.isEmpty()) { 
+			Vertex v = this.active.get(new Random().nextInt(this.active.size()));
+			g = v.influencia(g);
+		}	
+		return g;	
+	}
+	
+	public void removeVertexById(int id) {
+		for(Vertex v: this.V) {
+			if(v.id == id) {
+				this.V.remove(v);
+				break;
+			}
+			
+		}
+		for(Vertex v: this.active) {
+			if(v.id == id) {
+				this.active.remove(v);
+				break;
+			}
+		}
+		for(int i=0;i<this.A.size();i++) {
+			if(this.A.get(i).source == id || this.A.get(i).dest == id) {
+				this.A.remove(i);
+				
+			}
+		}
 		
-		
+	}
+	
+	public void decreaseThreashold(int id){
+		for(Vertex v: this.V) {
+			if(v.id == id) {
+				if(v.threshold > 0) {
+					v.threshold--;
+				}else {
+					System.out.println("Threshold isnt positive: "+v.toString());
+				}
+				break;
+			}
+		}
+		//System.out.println("Vertex "+ id+" not found");
 	}
 	
 	
@@ -98,9 +136,12 @@ public class Graph {
 	public static void main(String[] args) throws IOException {
 		Graph g = new Graph("instances/scalefree_n10.imp");
 		g.active.add(g.V.get(0));
-		for(Vertex v: g.V) {
+		Graph result =  g.propagation();
+		for(Vertex v: result.V) {
 			System.out.println(v.toString());
 		}
-		g.propagation();
+		System.out.println("actives: "+result.V.size());
+		
+		
 	}
 }
