@@ -86,7 +86,7 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		//Evaluate exchange
 		for(Vertex in: CL) {
 			for (Vertex out : this.incumbentSol) {
-				deltaCost = in.evaluateExchangeCost(in, out, aux);
+				deltaCost = this.instance.evaluateExchangeCost(in, out, aux);
 				if(deltaCost > maxDeltaCost ) {
 					maxDeltaCost = deltaCost;
 					bestCandIn = in;
@@ -117,6 +117,10 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		ObjFunction.evaluate(incumbentSol);
 		
 		return null;
+	}
+	
+	public static void main(String[] args) {
+		//TS_Influence tb = new TS_Influence(objFunction, tenure, iterations, filename, k)
 	}
 
 }

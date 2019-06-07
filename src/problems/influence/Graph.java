@@ -8,7 +8,10 @@ import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Graph {
+import problems.Evaluator;
+import solutions.Solution;
+
+public class Graph implements Evaluator<Vertex> {
 	public ArrayList<Vertex> V;
 	public ArrayList<Arc> A;
 	public ArrayList<Vertex> active;
@@ -17,6 +20,18 @@ public class Graph {
 		this.active = new ArrayList<Vertex>();
 		this.V = new ArrayList<Vertex>();
 		this.A = new ArrayList<Arc>();
+	}
+	
+	public Graph(Graph g) {
+		for(Vertex v: g.V) {
+			this.V.add(new Vertex(v));
+		}
+		for(Arc a: g.A) {
+			this.A.add(new Arc(a));
+		}
+		for(Vertex v: g.active) {
+			this.active.add(v);
+		}
 	}
 	
 	public Graph(String filename) throws IOException {
@@ -131,7 +146,35 @@ public class Graph {
 		//System.out.println("Vertex "+ id+" not found");
 	}
 	
-	
+	@Override
+	public Integer getDomainSize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double evaluate(Solution<Vertex> sol) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double evaluateInsertionCost(Vertex elem, Solution<Vertex> sol) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double evaluateRemovalCost(Vertex elem, Solution<Vertex> sol) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Double evaluateExchangeCost(Vertex elemIn, Vertex elemOut, Solution<Vertex> sol) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	public static void main(String[] args) throws IOException {
 		Graph g = new Graph("instances/scalefree_n10.imp");
@@ -144,4 +187,6 @@ public class Graph {
 		
 		
 	}
+
+
 }

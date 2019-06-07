@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import problems.Evaluator;
 import solutions.Solution;
 
-public class Vertex implements Evaluator<Vertex> {
+public class Vertex {
 	
 	public int id;
 	public int threshold;
@@ -56,25 +56,14 @@ public class Vertex implements Evaluator<Vertex> {
 	}
 
 
-	@Override
-	public Integer getDomainSize() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Double evaluate(Solution<Vertex> sol) {
-		return null;
-	}
-	
 	public Double evaluate(Solution<Vertex> sol, Graph g) {		
-		for(Vertex v: sol) {
+		for(Vertex v: g.V) {
 			g.active.add(v);
 		}
 		
 		
 		// TODO Auto-generated method stub
-		return null;
+		return (double) g.active.size();
 	}
 	
 	public Graph influencia(Graph g) {
@@ -99,22 +88,23 @@ public class Vertex implements Evaluator<Vertex> {
 		return g;
 	}
 
-	@Override
-	public Double evaluateInsertionCost(Vertex elem, Solution<Vertex> sol) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Double evaluateRemovalCost(Vertex elem, Solution<Vertex> sol) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Double evaluateExchangeCost(Vertex elemIn, Vertex elemOut, Solution<Vertex> sol) {
-		Graph incuSol = new Graph();
-		return null;
+	
+	public Double evaluateExchangeCost(Vertex elemIn, Vertex elemOut, Solution<Vertex> sol, Graph g) {
+		Graph incumSol = new Graph(g);
+		g.active = new ArrayList<Vertex>();
+		for(Vertex v: sol) {
+			incumSol.active.add(v);
+		}
+		Graph aux = incumSol.propagation();
+		Double preCost = Double.valueOf(aux.V.size());
+		incumSol.active.remove(elemOut);
+		incumSol.active.add(elemIn);
+		aux = incumSol.propagation();
+		Double posCost = Double.valueOf(aux.V.size());
+		
+		
+		
+		return preCost - posCost;
 	}
 	
 }
