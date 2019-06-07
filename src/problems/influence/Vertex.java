@@ -2,7 +2,6 @@ package problems.influence;
 
 import java.util.ArrayList;
 
-import problems.Evaluator;
 import solutions.Solution;
 
 public class Vertex {

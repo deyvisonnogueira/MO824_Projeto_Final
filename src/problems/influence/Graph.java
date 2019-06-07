@@ -98,12 +98,12 @@ public class Graph implements Evaluator<Vertex> {
 			g.A.add((new Arc(a)));
 		}
 		for(Vertex v: this.active) {
-			g.active.add(v);
+			g.active.add(new Vertex(v));
 		}
 		
 	
 		while(!g.active.isEmpty()) { 
-			Vertex v = this.active.get(new Random().nextInt(this.active.size()));
+			Vertex v = g.active.get(new Random().nextInt(g.active.size()));
 			g = v.influencia(g);
 		}	
 		return g;	
@@ -138,7 +138,7 @@ public class Graph implements Evaluator<Vertex> {
 				if(v.threshold > 0) {
 					v.threshold--;
 				}else {
-					System.out.println("Threshold isnt positive: "+v.toString());
+				//	System.out.println("Threshold isnt positive: "+v.toString());
 				}
 				break;
 			}
@@ -154,8 +154,19 @@ public class Graph implements Evaluator<Vertex> {
 
 	@Override
 	public Double evaluate(Solution<Vertex> sol) {
-		// TODO Auto-generated method stub
-		return null;
+		Graph incumSol = new Graph();
+		for(Vertex v: this.V) {
+			incumSol.V.add(new Vertex(v));
+		}
+		for(Arc a: this.A) {
+			incumSol.A.add(new Arc(a));
+		}
+		this.active = new ArrayList<Vertex>();
+		for(Vertex v: sol) {
+			incumSol.active.add(new Vertex(v));
+		}
+		
+		return (double ) this.V.size() - incumSol.propagation().V.size();
 	}
 
 	@Override
@@ -172,18 +183,37 @@ public class Graph implements Evaluator<Vertex> {
 
 	@Override
 	public Double evaluateExchangeCost(Vertex elemIn, Vertex elemOut, Solution<Vertex> sol) {
-		// TODO Auto-generated method stub
-		return null;
+		Graph incumSol = new Graph();
+		for(Vertex v: this.V) {
+			incumSol.V.add(new Vertex(v));
+		}
+		for(Arc a: this.A) {
+			incumSol.A.add(new Arc(a));
+		}
+		incumSol.active = new ArrayList<Vertex>();
+		for(Vertex v: sol) {
+			incumSol.active.add(new Vertex(v));
+		}
+		Graph aux = incumSol.propagation();
+		incumSol.active.remove(elemOut);
+		incumSol.active.add(elemIn);
+		aux = incumSol.propagation();
+		Double posCost = Double.valueOf(aux.V.size());
+		
+		return  posCost;
 	}
 	
 	public static void main(String[] args) throws IOException {
-		Graph g = new Graph("instances/scalefree_n10.imp");
+		Graph g = new Graph("instances/scalefree_n20.imp");
 		g.active.add(g.V.get(0));
+		g.active.add(g.V.get(1));
+		g.active.add(g.V.get(2));
+		g.active.add(g.V.get(3));
 		Graph result =  g.propagation();
 		for(Vertex v: result.V) {
 			System.out.println(v.toString());
 		}
-		System.out.println("actives: "+result.V.size());
+		System.out.println("v: "+result.V.size());
 		
 		
 	}
