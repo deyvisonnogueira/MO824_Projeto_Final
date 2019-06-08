@@ -20,7 +20,6 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		this.instance = new Graph(filename);
 		
 		this.k = k;
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -58,7 +57,6 @@ public class TS_Influence extends AbstractTS<Vertex> {
 
 	@Override
 	public Solution<Vertex> createEmptySol() {
-		//Solution<Vertex> sol = new Solution<Vertex>();
 		return  new Solution<Vertex>();
 	}
 	
@@ -68,10 +66,8 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		Random rng = new Random();
 		while(count < this.k) {
 			int sorteio = rng.nextInt(this.instance.V.size());
-			System.out.println("sorteio "+sorteio);
 			if(!sol.contains(this.instance.V.get(sorteio))) {
 				sol.add(this.instance.V.get(sorteio));
-				System.out.println("Sorteado: "+sol.get(count));
 				count++;
 			}
 		}
@@ -86,7 +82,6 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		Double maxDeltaCost, deltaCost;
 		Vertex bestCandIn = null, bestCandOut = null;
 		Vertex fake = new Vertex(-1, -1);
-		Solution<Vertex> aux = new Solution<Vertex>();
 		
 
 		maxDeltaCost = Double.POSITIVE_INFINITY;
@@ -94,7 +89,6 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		//Evaluate exchange
 		for(Vertex in: CL) {
 			for (Vertex out : this.incumbentSol) {
-				
 				deltaCost = this.instance.evaluateExchangeCost(in, out, this.incumbentSol);
 				if(deltaCost < maxDeltaCost ) {
 					maxDeltaCost = deltaCost;
@@ -104,7 +98,6 @@ public class TS_Influence extends AbstractTS<Vertex> {
 			}
 			
 		}
-		
 	
 		// Implement the best non-tabu move
 		TL.poll();
@@ -140,12 +133,12 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		
 		this.bestCost = this.incumbentCost = this.incumbentSol.cost = this.bestSol.cost = this.ObjFunction.evaluate(bestSol);
 		CL = makeCL();
-		TL = makeTL();
+		TL = makeTL();		
+		long startTime = System.currentTimeMillis();
+		long maxDurationInMilliseconds = 2 * 60 * 1000;
+		boolean intime = true;
 		
-		
-		
-		for (int i = 0; i < iterations; i++) {
-			
+		for (int i = 0; i < iterations && intime ; i++) {
 			neighborhoodMove();
 			if (bestSol.cost < incumbentSol.cost) {
 				bestSol = new Solution<Vertex>();
@@ -156,6 +149,10 @@ public class TS_Influence extends AbstractTS<Vertex> {
 				if (verbose)
 					System.out.println("(Iter. " + i + ") BestSol = " + bestSol);
 			}
+			
+			if(System.currentTimeMillis() > startTime + maxDurationInMilliseconds) {
+				intime = false;
+			}
 		}
 
 		return bestSol;
@@ -163,7 +160,7 @@ public class TS_Influence extends AbstractTS<Vertex> {
 
 	
 	public static void main(String[] args) throws IOException {
-		TS_Influence tabusearch = new TS_Influence("instances/scalefree_n100.imp", 10, 10000, 3);
+		TS_Influence tabusearch = new TS_Influence("instances/scalefree_n100.imp", 10, 1000000, 6);
 		Solution<Vertex> bestSol = tabusearch.solve();
 		System.out.println("maxVal = " + bestSol);
 		
