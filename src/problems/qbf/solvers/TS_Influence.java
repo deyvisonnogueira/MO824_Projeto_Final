@@ -27,7 +27,7 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		ArrayList<Vertex> CL = new ArrayList<Vertex>();
 		
 		for(Vertex v: this.instance.V) {
-			if(!this.bestSol.contains(v)) {
+			if(!this.bestSol.contains(v) && v.arcs.size() > 0) {
 				CL.add(v);
 			}
 		}
@@ -42,12 +42,12 @@ public class TS_Influence extends AbstractTS<Vertex> {
 
 	@Override
 	public ArrayDeque<Vertex> makeTL() {
-		  ArrayDeque<Vertex> TL = new ArrayDeque<Vertex>(this.tenure*2);
-	        
-	        for(int i=0; i< this.tenure*2;i++) {
-	        	TL.add(new Vertex(-1,0));
-	        }
-	        return TL;
+	  ArrayDeque<Vertex> TL = new ArrayDeque<Vertex>(this.tenure*2);
+        
+        for(int i=0; i< this.tenure*2;i++) {
+        	TL.add(new Vertex(-1,0));
+        }
+        return TL;
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class TS_Influence extends AbstractTS<Vertex> {
 		Random rng = new Random();
 		while(count < this.k) {
 			int sorteio = rng.nextInt(this.instance.V.size());
-			if(!sol.contains(this.instance.V.get(sorteio))) {
+			if(!sol.contains(this.instance.V.get(sorteio)) && this.instance.V.get(sorteio).arcs.size() >0 ) {
 				sol.add(this.instance.V.get(sorteio));
 				count++;
 			}
@@ -79,19 +79,19 @@ public class TS_Influence extends AbstractTS<Vertex> {
 
 	@Override
 	public Solution<Vertex> neighborhoodMove() {
-		Double maxDeltaCost, deltaCost;
+		Double minDeltaCost, deltaCost;
 		Vertex bestCandIn = null, bestCandOut = null;
 		Vertex fake = new Vertex(-1, -1);
 		
 
-		maxDeltaCost = Double.POSITIVE_INFINITY;
+		minDeltaCost = Double.POSITIVE_INFINITY;
 		updateCL();
 		//Evaluate exchange
 		for(Vertex in: CL) {
 			for (Vertex out : this.incumbentSol) {
 				deltaCost = this.instance.evaluateExchangeCost(in, out, this.incumbentSol);
-				if(deltaCost < maxDeltaCost ) {
-					maxDeltaCost = deltaCost;
+				if(deltaCost < minDeltaCost ) {
+					minDeltaCost = deltaCost;
 					bestCandIn = in;
 					bestCandOut = out;
 				}
@@ -160,7 +160,7 @@ public class TS_Influence extends AbstractTS<Vertex> {
 
 	
 	public static void main(String[] args) throws IOException {
-		TS_Influence tabusearch = new TS_Influence("instances/scalefree_n100.imp", 10, 1000000, 6);
+		TS_Influence tabusearch = new TS_Influence("instances/scalefree_n500.imp", 10, 1000000, 10);
 		Solution<Vertex> bestSol = tabusearch.solve();
 		System.out.println("maxVal = " + bestSol);
 		
