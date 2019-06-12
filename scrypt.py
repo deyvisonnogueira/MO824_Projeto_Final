@@ -1,9 +1,9 @@
 
 import os
 
-instances = ['100','200','300','400','500','600','700','800','900','1000','1100',]
+instances = ['100','200','300','400','500','600','700','800','900','1000',]
 variacao = ['TS_DIVERSIFICATION_INFLUENCE','TS_INFLUENCE','TS_SURROGATE_INFLUENCE']
-seed = ['10','15','20','25','30',]
+seed = ['10','15','20','25',]
 
 
 for v in variacao:			
