@@ -61,7 +61,11 @@ public class TS_Diversification_Influence extends AbstractTS<Vertex> {
 
 	@Override
 	public void updateCL() {
-		
+		for(Vertex v: this.instance.V) {
+			if(!this.bestSol.contains(v) && v.arcs.size() > 0) {
+				CL.add(v);
+			}
+		}
 	}
 	
 	public void diversification() {
@@ -77,17 +81,13 @@ public class TS_Diversification_Influence extends AbstractTS<Vertex> {
 		}
 		
 		
-		Vertex elemIn = this.instance.V.get(menores.get(new Random().nextInt(menores.size())));
+		Vertex elemIn = this.instance.V.get(menores.get(new Random().nextInt(menores.size()))-1);
 		Vertex elemOut = this.incumbentSol.get(new Random().nextInt(k));
 		this.incumbentSol.remove(elemOut);
 		this.incumbentSol.add(elemIn);
 		this.incumbentSol.cost = this.incumbentCost = this.ObjFunction.evaluate(this.incumbentSol);
 		this.TL.poll();
 		TL.add(elemIn);
-		
-		for(Integer i: menores) {
-			System.out.println("count ["+i + "] = "+count[i]);
-		}
 		
 		for (int i = 0; i < count.length; i++) {
 			count[i] = 0;
@@ -175,7 +175,7 @@ public class TS_Diversification_Influence extends AbstractTS<Vertex> {
 		CL = makeCL();
 		TL = makeTL();		
 		long startTime = System.currentTimeMillis();
-		long maxDurationInMilliseconds = 2 * 60 * 1000;
+		long maxDurationInMilliseconds = 30 * 60 * 1000;
 		boolean intime = true;
 		int x = 0;
 		for (int i = 0; i < iterations && intime ; i++) {
@@ -199,7 +199,9 @@ public class TS_Diversification_Influence extends AbstractTS<Vertex> {
 			if(x >= 5) {
 				diversification();
 				x=0;
+				
 			}
+			
 		}
 
 		return bestSol;
@@ -207,7 +209,7 @@ public class TS_Diversification_Influence extends AbstractTS<Vertex> {
 
 	
 	public static void main(String[] args) throws IOException {
-		TS_Diversification_Influence tabusearch = new TS_Diversification_Influence("instances/scalefree_n100.imp", 10, 1000000, 10);
+		TS_Diversification_Influence tabusearch = new TS_Diversification_Influence("instances/scalefree_n"+args[0]+".imp", 10, 1000000, Integer.valueOf(args[1]));
 		Solution<Vertex> bestSol = tabusearch.solve();
 		System.out.println("maxVal = " + bestSol);
 		

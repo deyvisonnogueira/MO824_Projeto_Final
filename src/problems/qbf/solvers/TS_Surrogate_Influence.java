@@ -6,21 +6,42 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import metaheuristics.tabusearch.AbstractTS;
+import problems.Evaluator;
 import problems.influence.Graph;
+import problems.influence.RelaxGraph;
 import problems.influence.Vertex;
 import solutions.Solution;
 
-public class TS_Influence extends AbstractTS<Vertex> {
+public class TS_Surrogate_Influence extends AbstractTS<Vertex> {
 	
-	public Graph instance;
+	public RelaxGraph instance;
 	public int k;
+	private boolean relax;
+	protected Evaluator<Vertex> relaxObjFunction;
 
-	public TS_Influence(String filename, Integer tenure, Integer iterations, int k) throws IOException {
+	public TS_Surrogate_Influence(String filename, Integer tenure, Integer iterations, int k) throws IOException {
 		super(new Graph(filename), tenure, iterations);
-		this.instance = new Graph(filename);
-		
+		this.instance = new RelaxGraph(filename);
+		this.relax = false;
 		this.k = k;
 	}
+	
+	
+	
+
+	public boolean isRelax() {
+		return relax;
+	}
+
+
+
+
+	public void setRelax(boolean relax) {
+		this.relax = relax;
+	}
+
+
+
 
 	@Override
 	public ArrayList<Vertex> makeCL() {
@@ -153,7 +174,7 @@ public class TS_Influence extends AbstractTS<Vertex> {
 				if (verbose)
 					System.out.println("(Iter. " + i + ") BestSol = " + bestSol);
 			}
-			
+			System.out.println("(Iter. " + i + ")");
 			if(System.currentTimeMillis() > startTime + maxDurationInMilliseconds) {
 				intime = false;
 			}
@@ -164,7 +185,7 @@ public class TS_Influence extends AbstractTS<Vertex> {
 
 	
 	public static void main(String[] args) throws IOException {
-		TS_Influence tabusearch = new TS_Influence("instances/scalefree_n"+args[0]+".imp", 10, 1000000, Integer.valueOf(args[1]));
+		TS_Surrogate_Influence tabusearch = new TS_Surrogate_Influence("instances/scalefree_n"+args[0]+".imp", 10, 1000000, Integer.valueOf(args[1]));
 		Solution<Vertex> bestSol = tabusearch.solve();
 		System.out.println("maxVal = " + bestSol);
 		

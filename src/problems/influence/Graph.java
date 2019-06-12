@@ -195,12 +195,13 @@ public class Graph implements Evaluator<Vertex> {
 			incumSol.active.add(new Vertex(v));
 		}
 		Graph aux = incumSol.propagation();
+		Double preCost = Double.valueOf(aux.V.size());
 		incumSol.active.remove(elemOut);
 		incumSol.active.add(elemIn);
 		aux = incumSol.propagation();
 		Double posCost = Double.valueOf(aux.V.size());
 		
-		return  posCost;
+		return posCost;
 	}
 	
 	public static void main(String[] args) throws IOException {
