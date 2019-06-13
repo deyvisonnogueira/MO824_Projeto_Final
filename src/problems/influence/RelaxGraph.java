@@ -37,10 +37,14 @@ public class RelaxGraph extends Graph {
 			g.active.add(new Vertex(v));
 		}
 		
-	
-		while(!g.active.isEmpty() && g.active.size() > (g.V.size()/2) ) { 
+		
+		while(!g.active.isEmpty() ) {
+			//System.out.println("this.v.size/2 = "+(2*this.V.size()/3) + " < "+g.V.size()+ " g.size");
 			Vertex v = g.active.get(new Random().nextInt(g.active.size()));
 			g = v.influencia(g);
+			if( !((2*this.V.size()/3) < g.V.size())) {
+				break;
+			}
 		}	
 		
 		
